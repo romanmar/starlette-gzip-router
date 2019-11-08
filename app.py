@@ -2,14 +2,23 @@ from starlette.applications import Starlette
 from starlette.staticfiles import StaticFiles
 from starlette.responses import HTMLResponse
 from starlette.templating import Jinja2Templates
+from starlette.middleware.gzip import GZipMiddleware
+from hello_v1.endpoints import hello_api as hello_v1
+from hello_v2.endpoints import hello_api as hello_v2
+
 import uvicorn
 
+import logging
+logger = logging.getLogger(__name__)
 
 templates = Jinja2Templates(directory='templates')
 
 app = Starlette(debug=True)
-app.mount('/static', StaticFiles(directory='statics'), name='static')
+app.add_middleware(GZipMiddleware, minimum_size=1000)
 
+app.mount('/static', StaticFiles(directory='statics'), name='static')
+app.mount('/hello/v1', app=hello_v1)
+app.mount('/hello/v2', app=hello_v2)
 
 @app.route('/')
 async def homepage(request):

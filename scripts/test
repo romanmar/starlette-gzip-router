@@ -1,0 +1,8 @@
+#!/bin/bash
+echo 
+(set -x;curl -s -X POST http://127.0.0.1:8000/hello/v1/ -H "content-encoding: gzip" --data-binary @test.json.gz | python -m json.tool)
+echo 
+echo 
+(set -x;curl -s -X POST http://127.0.0.1:8000/hello/v2/ -H "content-encoding: gzip" --data-binary @test.json.gz | python -m json.tool)
+
+echo
